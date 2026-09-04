@@ -1,23 +1,28 @@
-import { FC, useMemo } from 'react';
-import { Preloader } from '../ui/preloader';
-import { OrderInfoUI } from '../ui/order-info';
+import { FC, useEffect, useMemo } from 'react';
+import { Preloader, OrderInfoUI } from '@ui';
 import { TIngredient } from '@utils-types';
+import { useSelector, useDispatch } from '../../services/store';
+import { fetchOrders, getOrders } from '../../slices/orders-slice';
+import { useParams } from 'react-router-dom';
+import { getIngredients } from '../../slices/ingredient-slice';
+import styles from '../ui/order-info/order-info.module.css';
 
-export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
+type OrderInfoProps = {
+  isModal?: boolean;
+};
 
-  const ingredients: TIngredient[] = [];
+export const OrderInfo: FC<OrderInfoProps> = ({ isModal = false }) => {
+  const { number } = useParams();
+  const ordersNumber = Number(number);
+  const dispatch = useDispatch();
+  const orders = useSelector(getOrders);
+  const orderData = orders.find((order) => order);
+  const ingredients: TIngredient[] = useSelector(getIngredients);
 
-  /* Готовим данные для отображения */
+  useEffect(() => {
+    dispatch(fetchOrders(ordersNumber));
+  }, []);
+
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 
@@ -63,5 +68,14 @@ export const OrderInfo: FC = () => {
     return <Preloader />;
   }
 
-  return <OrderInfoUI orderInfo={orderInfo} />;
+  return (
+    <div className={!isModal ? `${styles.page} ${styles.standalone}` : ''}>
+      {!isModal && (
+        <h2 className='text text_type_digits-default mb-10'>
+          #{orderInfo.number}
+        </h2>
+      )}
+      <OrderInfoUI orderInfo={orderInfo} />
+    </div>
+  );
 };
