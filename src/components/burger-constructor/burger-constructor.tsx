@@ -21,12 +21,12 @@ export const BurgerConstructor: FC = () => {
   const orderModalData = useSelector(getOrder);
   const isAuthenticated = useSelector(getIsAuthenticated);
 
-  const onOrderClick = () => {
+  const onOrderClick = async () => {
     if (!isAuthenticated) {
       navigate('/login', { state: { from: '/' } });
       return;
     }
-    if (!bun) {
+    if (!bun || orderIsLoading) {
       return;
     }
     const orderData = [
@@ -34,11 +34,13 @@ export const BurgerConstructor: FC = () => {
       ...ingredients.map((item) => item._id),
       bun._id
     ];
-    dispatch(fetchOrderBurgerApi(orderData));
+    const result = await dispatch(fetchOrderBurgerApi(orderData));
+    if (fetchOrderBurgerApi.fulfilled.match(result)) {
+      dispatch(clearBurger());
+    }
   };
 
   const closeOrderModal = () => {
-    dispatch(clearBurger());
     dispatch(clearOrder());
     navigate('/');
   };

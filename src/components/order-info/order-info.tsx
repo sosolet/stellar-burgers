@@ -4,7 +4,7 @@ import { TIngredient } from '@utils-types';
 import { useSelector, useDispatch } from '../../services/store';
 import { fetchOrders, getOrders } from '../../slices/orders-slice';
 import { useParams } from 'react-router-dom';
-import { getIngredients } from '../../slices/ingredient-slice';
+import { getIngredients } from '../../slices/ingredients-slice';
 import styles from '../ui/order-info/order-info.module.css';
 
 type OrderInfoProps = {
@@ -16,12 +16,15 @@ export const OrderInfo: FC<OrderInfoProps> = ({ isModal = false }) => {
   const ordersNumber = Number(number);
   const dispatch = useDispatch();
   const orders = useSelector(getOrders);
-  const orderData = orders.find((order) => order);
+  const orderData = useMemo(
+    () => orders.find((order) => order.number === ordersNumber),
+    [orders, ordersNumber]
+  );
   const ingredients: TIngredient[] = useSelector(getIngredients);
 
   useEffect(() => {
     dispatch(fetchOrders(ordersNumber));
-  }, []);
+  }, [ordersNumber, dispatch]);
 
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;

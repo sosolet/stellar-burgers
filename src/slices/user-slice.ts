@@ -193,7 +193,7 @@ const userSlice = createSlice({
         state.loginUserRequest = true;
       })
       .addCase(fetchUpdateUser.rejected, (state, action) => {
-        state.loginUserRequest = true;
+        state.loginUserRequest = false;
         state.error =
           action.error.message === 'You should be authorised'
             ? 'Пожалуйста, авторизуйтесь'
@@ -210,7 +210,7 @@ const userSlice = createSlice({
       })
       .addCase(fetchLogout.rejected, (state, action) => {
         state.error = action.error.message;
-        state.loginUserRequest = true;
+        state.loginUserRequest = false;
       })
       .addCase(fetchLogout.fulfilled, (state) => {
         state.isAuthenticated = false;

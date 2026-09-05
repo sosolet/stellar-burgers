@@ -13,13 +13,11 @@ export const Login: FC = () => {
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const error = useSelector(getError);
-  const navigate = useNavigate();
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     const data = { email, password };
     dispatch(fetchLoginUser(data));
-    navigate('/');
   };
 
   useEffect(() => {

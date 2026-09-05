@@ -18,16 +18,10 @@ import {
   OrderInfo,
   ProtectedRoute
 } from '@components';
-import {
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-  useParams
-} from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch } from '../../services/store';
-import { fetchIngredients } from '../../slices/ingredient-slice';
+import { fetchIngredients } from '../../slices/ingredients-slice';
 import { getCookie } from '../../utils/cookie';
 import { fetchGetUser } from '../../slices/user-slice';
 
@@ -36,11 +30,10 @@ const App = () => {
   const background = location.state?.background;
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { number } = useParams();
 
   useEffect(() => {
     dispatch(fetchIngredients());
-    if (getCookie('accessToken')) {
+    if (getCookie('accessToken') || localStorage.getItem('refreshToken')) {
       dispatch(fetchGetUser());
     }
   }, []);

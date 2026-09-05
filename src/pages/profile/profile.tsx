@@ -25,9 +25,13 @@ export const Profile: FC = () => {
     formValue.email !== user?.email ||
     !!formValue.password;
 
-  const handleSubmit = (e: SyntheticEvent) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    dispatch(fetchUpdateUser(formValue));
+    const result = await dispatch(fetchUpdateUser(formValue));
+
+    if (fetchUpdateUser.fulfilled.match(result)) {
+      setFormValue((prev) => ({ ...prev, password: '' }));
+    }
   };
 
   const handleCancel = (e: SyntheticEvent) => {

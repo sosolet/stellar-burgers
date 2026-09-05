@@ -6,7 +6,7 @@ import { useSelector } from '../../services/store';
 
 export const ConstructorPage: FC = () => {
   const isIngredientsLoading = useSelector(
-    (store) => store.burger.isIngredientsLoading
+    (store) => store.ingredients.isIngredientsLoading
   );
 
   return (
